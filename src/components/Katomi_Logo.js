@@ -6,10 +6,10 @@ export default class Logo extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          style={{ width: 200, height: 70 }}
+          style={{ width: 250, height: 85 }}
           source={require("../images/katomi.png")}
         />
-        <Text style={styles.logoText}>Welcome to Katomi app</Text>
+        <Text style={styles.logoText}> Bracelet Application</Text>
       </View>
     );
   }

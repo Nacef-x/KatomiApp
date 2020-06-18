@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+/*import React, { Component } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+//import Icon from "react-native-vector-icons/Ionicons";
 
 const { width: WIDGH } = Dimensions.get("window");
 export default class Logo extends React.Component {
@@ -48,19 +48,19 @@ const styles = StyleSheet.create({
 
   inputBox: {
     width: WIDGH - 60,
-    height: 40,
-    backgroundColor: "rgba(255, 255,255,0.3)",
+    backgroundColor: "rgba(45, 35, 92,0.99)",
     borderRadius: 15,
     paddingHorizontal: 16,
     color: "rgba(0,0,0,0.8)",
     marginVertical: 10,
+    fontSize: 16,
   },
   button: {
     width: WIDGH - 90,
-    backgroundColor: "#1c313a",
+    backgroundColor: "rgba(45, 35, 92,0.99)",
     borderRadius: 25,
     marginVertical: 15,
-    paddingVertical: 10,
+    paddingVertical: 13,
   },
   buttonText: {
     fontSize: 15,
@@ -68,4 +68,4 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     textAlign: "center",
   },
-});
+});*/

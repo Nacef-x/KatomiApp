@@ -11,19 +11,28 @@ import { Actions } from "react-native-router-flux";
 
 import Routes from "./components/routes";
 
-class Main extends Component {
+class Main extends React.Component {
   render() {
+    const {
+      authData: { isLoggedIn },
+    } = this.props;
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#1c313a" barStyle="light-content" />
-        <Routes />
+        <Routes isLoggedIn={isLoggedIn} />
       </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 });
-export default connect(null, null)(Main);
+
+mapStateToProps = (state) => ({
+  authData: state.authReducer.authData,
+});
+
+export default connect(mapStateToProps, null)(Main);

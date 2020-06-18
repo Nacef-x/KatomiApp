@@ -6,16 +6,25 @@ import {
   StatusBar,
   TouchableOpacity,
   Alert,
+  Dimensions,
 } from "react-native";
+import { Field, reduxForm } from "redux-form";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
 import Logo from "../components/Katomi_Logo";
 import Form from "../components/form";
-//import InputText from "../components/InputText";
+import InputText from "../components/InputText";
+import { createNewUser } from "../actions/auth.actions";
+import Loader from "../components/Loader";
+import { ErrorUtils } from "../utils/auth.utils";
+
 import { Actions } from "react-native-router-flux";
+const { width: WIDGH } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#455a64",
+    backgroundColor: "#BEC0AC",
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -28,16 +37,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   signupText: {
-    color: "rgba(255,255,255,0.6)",
+    color: "rgba(255,255,255,1)",
     fontSize: 16,
   },
   signupButton: {
-    color: "#ffffff",
+    color: "#8143bb",
     fontSize: 16,
-    fontWeight: "500",
+    //fontWeight: "400",
   },
   button: {
-    width: 300,
+    width: WIDGH - 90,
     backgroundColor: "#1c313a",
     borderRadius: 25,
     marginVertical: 10,
@@ -49,26 +58,85 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     textAlign: "center",
   },
-  inputBox: {
-    width: 300,
-    backgroundColor: "rgba(255, 255,255,0.2)",
-    borderRadius: 25,
-    paddingHorizontal: 16,
-    fontSize: 16,
+  errorText: {
     color: "#ffffff",
-    marginVertical: 10,
+    fontSize: 14,
+    paddingHorizontal: 16,
+    paddingBottom: 8,
   },
 });
 
-export default class Signup extends React.Component {
+class Signup extends React.Component {
   goBack() {
     Actions.pop();
   }
+
+  createNewUser = async (values) => {
+    try {
+      const response = await this.props.dispatch(createNewUser(values));
+      if (!response.success) {
+        throw response;
+      }
+    } catch (error) {
+      const newError = new ErrorUtils(error, "Signup Error");
+      newError.showAlert();
+    }
+  };
+
+  onSubmit = (values) => {
+    this.createNewUser(values);
+  };
+
+  renderTextInput = (field) => {
+    const {
+      meta: { touched, error },
+      label,
+      secureTextEntry,
+      maxLength,
+      keyboardType,
+      placeholder,
+      input: { onChange, ...restInput },
+    } = field;
+    return (
+      <View>
+        <InputText
+          onChangeText={onChange}
+          maxLength={maxLength}
+          placeholder={placeholder}
+          keyboardType={keyboardType}
+          secureTextEntry={secureTextEntry}
+          label={label}
+          {...restInput}
+        />
+        {touched && error && <Text style={styles.errorText}>{error}</Text>}
+      </View>
+    );
+  };
+
   render() {
+    const { handleSubmit, createUser } = this.props;
     return (
       <View style={styles.container}>
+        {createUser.isLoading && <Loader />}
         <Logo />
-        <Form type="Signup" />
+
+        <Field
+          name="email"
+          placeholder="Enter your email"
+          component={this.renderTextInput}
+        />
+        <Field
+          name="password"
+          placeholder="Enter your password"
+          secureTextEntry={true}
+          component={this.renderTextInput}
+        />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit(this.onSubmit)}
+        >
+          <Text style={styles.buttonText}>Signup</Text>
+        </TouchableOpacity>
         <View style={styles.signupTextCont}>
           <Text style={styles.signupText}>Already have an account?</Text>
           <TouchableOpacity onPress={this.goBack}>
@@ -79,3 +147,31 @@ export default class Signup extends React.Component {
     );
   }
 }
+
+const validate = (values) => {
+  const errors = {};
+
+  if (!values.email) {
+    errors.email = "Email is required";
+  }
+  if (!values.password) {
+    errors.password = "Name is required";
+  }
+  return errors;
+};
+
+mapStateToProps = (state) => ({
+  createUser: state.authReducer.createUser,
+});
+
+mapDispatchToProps = (dispatch) => ({
+  dispatch,
+});
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  reduxForm({
+    form: "register",
+    validate,
+  })
+)(Signup);
