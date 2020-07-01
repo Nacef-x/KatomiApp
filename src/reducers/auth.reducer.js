@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { logoutUser } from "../actions/auth.actions";
 
 const authData = (state = {}, action) => {
   switch (action.type) {
@@ -50,6 +51,8 @@ const createUser = (state = {}, action) => {
 };
 
 const loginUser = (state = {}, action) => {
+  console.log("state", state);
+
   switch (action.type) {
     case "LOGIN_USER_LOADING":
       return {

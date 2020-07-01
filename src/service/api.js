@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://192.168.43.147:3000";
 
 export const api = async (url, method, body = null, headers = {}) => {
   try {
@@ -12,18 +12,11 @@ export const api = async (url, method, body = null, headers = {}) => {
     }
 
     if (reqBody) {
-      fetchParams.headers["Content-type"] = "application/json";
+      fetchParams.headers["Content-Type"] = "application/json";
       fetchParams.body = reqBody;
     }
 
-    const fetchPromise = fetch(endPoint, fetchParams);
-    const timeOutPromise = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        reject("Request Timeout");
-      }, 3000);
-    });
-
-    const response = await Promise.race([fetchPromise, timeOutPromise]);
+    let response = await fetch(endPoint, fetchParams);
 
     return response;
   } catch (e) {
@@ -47,12 +40,11 @@ export const fetchApi = async (
       responseBody: null,
     };
     if (token) {
-      headers["x-auth"] = token;
+      //headers["x-auth"] = token;
+      headers["Authorization"] = token;
     }
 
     const response = await api(url, method, body, headers);
-
-    console.log(response);
 
     if (response.status === statusCode) {
       result.success = true;
@@ -85,9 +77,7 @@ export const fetchApi = async (
 
     result.responseBody = errorBody;
 
-    console.log(result);
-
-    throw result;
+    return result;
   } catch (error) {
     return error;
   }

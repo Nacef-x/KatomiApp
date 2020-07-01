@@ -1,5 +1,57 @@
 import { fetchApi } from "../service/api";
 
+export const sendEvents = (payload) => {
+  console.log("sending events", payload);
+  return async (dispatch, getState) => {
+    const state = getState();
+    console.log("state", state);
+
+    const {
+      userReducer: {
+        getUser: {
+          isSuccess,
+          userDetails: { token },
+        },
+      },
+    } = state;
+    if (!isSuccess) console.log("NOT LOGGED IN !!!");
+    console.log("token from store", token);
+
+    try {
+      dispatch({
+        type: "SEND_EVENTS_LOADING",
+      });
+
+      payload.sensors.forEach(async (sensor) => {
+        if (!sensor._id) return;
+        console.log("fetching", sensor.name);
+
+        let url = `/events/`;
+        let data = {
+          sensorId: sensor._id,
+          mesure: sensor.value + 15,
+          time: payload.time,
+        };
+        const response = await fetchApi(url, "POST", data, 201, token);
+
+        console.log("response", response);
+
+        if (response.success) {
+          dispatch({
+            type: "SEND_EVENT_SUCCESS",
+          });
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: "SEND_EVENTS_FAIL",
+        payload: error.responseBody,
+      });
+      return error;
+    }
+  };
+};
+
 export const createNewUser = (payload) => {
   return async (dispatch) => {
     try {

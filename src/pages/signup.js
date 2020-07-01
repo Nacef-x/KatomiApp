@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 
 import Logo from "../components/Katomi_Logo";
-import Form from "../components/form";
+//import Form from "../components/form";
 import InputText from "../components/InputText";
 import { createNewUser } from "../actions/auth.actions";
 import Loader from "../components/Loader";

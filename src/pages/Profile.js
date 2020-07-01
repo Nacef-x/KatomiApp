@@ -1,62 +1,177 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Button,
+} from "react-native";
+import { Table, Row, Rows } from "react-native-table-component";
+
 import { connect } from "react-redux";
+import Logo from "../components/Katomi_Logo";
+const { width: WIDGH } = Dimensions.get("window");
 
 import { logoutUser } from "../actions/auth.actions";
+import { sendEvents } from "../actions/events.actions";
+import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
+//HrDate = 0;
+//SpODate = 0;
+//MotionDate = 0;
+HrMesure = 0;
+SpOMesure = 0;
+MotionMesure = 0;
+var Time = new Date().toLocaleString();
+console.log(Time);
+//let Time = new Date().toLocaleString;
+//let a = T.getMinutes;
+
+const sensors = [
+  //{ _id: '', name: 'HrDate', value: "" },
+  //{ _id: '', name: 'SpODate', value: "" },
+  //{ _id: '', name: 'MotionDate', value: "" },
+  { _id: "5ede967b61b43502f829547f", name: "HrMesure", value: 0 },
+  { _id: "5ede972a61b43502f8295482", name: "SpOMesure", value: 0 },
+  { _id: "5ede96b761b43502f8295481", name: "MotionMesure", value: 0 },
+  { _id: "", name: "Time", value: Time },
+];
+
+const sensors_arr = sensors.map((s) => [s.name, s.value]);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#455a64",
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    padding: 20,
+    paddingTop: 30,
+    paddingVertical: 140,
+
+    backgroundColor: "#BEC0AC",
   },
-  textStyle: {
-    color: "#fff",
-    fontSize: 18,
-  },
+  head: { height: 45, backgroundColor: "#854EAE" },
+  text: { margin: 15 },
   button: {
-    width: 300,
+    //width: WIDGH - 220,
+    backgroundColor: "#1c313a",
+    borderRadius: 20,
+    marginVertical: 35,
+    width: "40%",
+    height: "30%",
+    justifyContent: "center",
+    //alignItems: "center",
+    marginHorizontal: WIDGH - 350,
+  },
+
+  buttonText: {
+    fontSize: 20,
+    //fontWeight: "400",
+    color: "#ffffff",
+    textAlign: "center",
+  },
+});
+const logout_styles = StyleSheet.create({
+  button: {
+    //width: WIDGH - 220,
     backgroundColor: "#1c313a",
     borderRadius: 25,
-    marginVertical: 10,
-    paddingVertical: 13,
+    marginVertical: 20,
+    width: "80%",
+    height: "65%",
+    justifyContent: "center",
+    //alignItems: "center",
+    marginHorizontal: WIDGH - 180,
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 20,
+    //fontWeight: "400",
     color: "#ffffff",
     textAlign: "center",
   },
 });
 
 class Profile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tableHead: ["Sensor", "Mesure"],
+      /*tableData: [
+        ["Heart Rate", HrMesure],
+        ["SpO²", SpOMesure],
+        ["Motion", MotionMesure],
+        ["Time", Time],
+      ],*/
+      tableData: sensors_arr,
+    };
+  }
+  sendEvents = () => {
+    this.props.dispatch(sendEvents({ sensors, Time }));
+  };
   logoutUser = () => {
     this.props.dispatch(logoutUser());
   };
 
   render() {
-    const {
-      getUser: { userDetails },
-    } = this.props;
-
+    const state = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.textStyle}>
-          This is a profile page for {userDetails ? userDetails.name : ""}
-        </Text>
-        <TouchableOpacity style={styles.button} onPress={this.logoutUser}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
+        <Logo />
+        <Table
+          borderStyle={{ borderWidth: 2, borderColor: "rgba(45, 35, 92,0.99)" }}
+        >
+          <Row
+            data={state.tableHead}
+            style={styles.head}
+            textStyle={styles.text}
+          />
+          <Rows data={state.tableData} textStyle={styles.text} />
+        </Table>
+
+        <PostButton text="Post" onPress={this.sendEvents} />
+        <LogoutButton text="Logout" onPress={this.logoutUser} />
       </View>
     );
   }
 }
 
+export function PostButton({ text, onPress }) {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.button}>
+        <Text style={styles.buttonText}>{text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+export function LogoutButton({ text, onPress }) {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View style={logout_styles.button}>
+        <Text style={logout_styles.buttonText}>{text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+//logoutUser = () => {
+// this.props.dispatch(logoutUser());
+//};
+const validate = (values) => {
+  const errors = {};
+  if (!values.name) {
+    errors.HrMesure = "can't get Heart rate ";
+  }
+  if (!values.email) {
+    errors.SpOMesure = "can't get SpOMesure ";
+  }
+  if (!values.password) {
+    errors.MotionMesure = "can't get MotionMesure";
+  }
+  return errors;
+};
 mapStateToProps = (state) => ({
   getUser: state.userReducer.getUser,
 });
-
 mapDispatchToProps = (dispatch) => ({
   dispatch,
 });

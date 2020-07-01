@@ -16,7 +16,7 @@ import { Field, reduxForm } from "redux-form";
 import InputText from "../components/InputText";
 import { loginUser } from "../actions/auth.actions";
 import Logo from "../components/Katomi_Logo";
-import Form from "../components/form";
+//import Form from "../components/form";
 import Loader from "../components/Loader";
 import { Actions } from "react-native-router-flux";
 const { width: WIDGH } = Dimensions.get("window");
@@ -66,16 +66,18 @@ class Login extends React.Component {
   loginUser = async (values) => {
     try {
       const response = await this.props.dispatch(loginUser(values));
-      console.log(response);
+      console.log("loginUSer", response);
+      if (!response) {
+        throw new Error("Something happened");
+      }
       if (!response.success) {
-        throw response;
+        throw new Error(response.responseBody.message);
       }
     } catch (error) {
       let errorText;
       if (error.message) {
         errorText = error.message;
       }
-      errorText = error.responseBody;
       Alert.alert("Login Error!", errorText, [
         {
           text: "Cancel",
@@ -118,7 +120,7 @@ class Login extends React.Component {
 
   render() {
     const { handleSubmit, loginUser } = this.props;
-    console.log(loginUser);
+    console.log("loginUser render ", loginUser);
     return (
       <View style={styles.container}>
         {loginUser && loginUser.isLoading && <Loader />}
@@ -152,15 +154,14 @@ class Login extends React.Component {
 }
 
 const validate = (values) => {
+  console.log("validating...");
+
   const errors = {};
-  if (!values.name) {
-    errors.name = "Name is required";
-  }
   if (!values.email) {
     errors.email = "Email is required";
   }
   if (!values.password) {
-    errors.password = "Name is required";
+    errors.password = "Password is required";
   }
   return errors;
 };

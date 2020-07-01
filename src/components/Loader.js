@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import React from "react";
+import { StyleSheet, View, ActivityIndicator } from "react-native";
 
 export default class Loader extends React.Component {
   render() {
