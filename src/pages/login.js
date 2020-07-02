@@ -59,11 +59,28 @@ const styles = StyleSheet.create({
 });
 
 class Login extends React.Component {
+  _isMounted = false;
+  constructor(props) {
+    super(props);
+    this.state = {
+      showLoader: false,
+    };
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   signup() {
     Actions.signup();
   }
 
   loginUser = async (values) => {
+    this.setState({ showLoader: true });
     try {
       const response = await this.props.dispatch(loginUser(values));
       console.log("loginUSer", response);
@@ -74,6 +91,7 @@ class Login extends React.Component {
         throw new Error(response.responseBody.message);
       }
     } catch (error) {
+      this.setState({ showLoader: false });
       let errorText;
       if (error.message) {
         errorText = error.message;
@@ -85,6 +103,8 @@ class Login extends React.Component {
           style: "cancel",
         },
       ]);
+    } finally {
+      if (!this._isMounted) this.setState({ showLoader: false });
     }
   };
 
@@ -123,7 +143,7 @@ class Login extends React.Component {
     console.log("loginUser render ", loginUser);
     return (
       <View style={styles.container}>
-        {loginUser && loginUser.isLoading && <Loader />}
+        {this.state.showLoader && <Loader />}
         <Logo />
         <Field
           name="email"

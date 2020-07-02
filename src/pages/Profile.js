@@ -6,6 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Button,
+  ScrollView,
 } from "react-native";
 import { Table, Row, Rows } from "react-native-table-component";
 
@@ -45,42 +46,29 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 30,
     paddingVertical: 140,
-
+    position: "relative",
     backgroundColor: "#BEC0AC",
+  },
+  buttonsContainer: {
+    flex: 1,
+    flexDirection: "row",
+    paddingTop: 10,
   },
   head: { height: 45, backgroundColor: "#854EAE" },
   text: { margin: 15 },
   button: {
     //width: WIDGH - 220,
+    flex: 1,
     backgroundColor: "#1c313a",
     borderRadius: 20,
     marginVertical: 35,
-    width: "40%",
-    height: "30%",
+    height: 50,
     justifyContent: "center",
     //alignItems: "center",
+    padding: 20,
     marginHorizontal: WIDGH - 350,
   },
 
-  buttonText: {
-    fontSize: 20,
-    //fontWeight: "400",
-    color: "#ffffff",
-    textAlign: "center",
-  },
-});
-const logout_styles = StyleSheet.create({
-  button: {
-    //width: WIDGH - 220,
-    backgroundColor: "#1c313a",
-    borderRadius: 25,
-    marginVertical: 20,
-    width: "80%",
-    height: "65%",
-    justifyContent: "center",
-    //alignItems: "center",
-    marginHorizontal: WIDGH - 180,
-  },
   buttonText: {
     fontSize: 20,
     //fontWeight: "400",
@@ -113,7 +101,7 @@ class Profile extends React.Component {
   render() {
     const state = this.state;
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Logo />
         <Table
           borderStyle={{ borderWidth: 2, borderColor: "rgba(45, 35, 92,0.99)" }}
@@ -126,29 +114,27 @@ class Profile extends React.Component {
           <Rows data={state.tableData} textStyle={styles.text} />
         </Table>
 
-        <PostButton text="Post" onPress={this.sendEvents} />
-        <LogoutButton text="Logout" onPress={this.logoutUser} />
-      </View>
+        <View style={styles.buttonsContainer}>
+          <PostButton text="Post" onPress={this.sendEvents} />
+          <LogoutButton text="Logout" onPress={this.logoutUser} />
+        </View>
+      </ScrollView>
     );
   }
 }
 
 export function PostButton({ text, onPress }) {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.button}>
-        <Text style={styles.buttonText}>{text}</Text>
-      </View>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>
   );
 }
 
 export function LogoutButton({ text, onPress }) {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={logout_styles.button}>
-        <Text style={logout_styles.buttonText}>{text}</Text>
-      </View>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>
   );
 }
