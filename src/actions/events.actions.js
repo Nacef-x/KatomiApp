@@ -26,7 +26,7 @@ export const sendEvents = (payload) => {
         let data = {
           sensorId: sensor._id,
           mesure: sensor.value + 15,
-          time: payload.time,
+          time: payload.Time,
         };
         const response = await fetchApi(url, "POST", data, 201, token);
 

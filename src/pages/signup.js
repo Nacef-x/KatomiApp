@@ -155,7 +155,7 @@ const validate = (values) => {
     errors.email = "Email is required";
   }
   if (!values.password) {
-    errors.password = "Name is required";
+    errors.password = "Password is required";
   }
   return errors;
 };
