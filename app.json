@@ -22,7 +22,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
-  }
+      "supportsTablet": true,
+      "bundleIdentifier": "app"
+    },
+    "android": {
+      "package": "ble"
+    },
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
+    "entryPoint": "node_modules/expo/AppEntry.js"
+  },
+  "displayName": "KatomiApp",
+  "name": "KatomiApp"
 }
