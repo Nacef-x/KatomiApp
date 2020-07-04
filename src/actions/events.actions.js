@@ -19,14 +19,16 @@ export const sendEvents = (payload) => {
         type: "SEND_EVENTS_LOADING",
       });
 
+      console.log("SENDING DATA TO API", payload.sensors);
+
       payload.sensors.forEach(async (sensor) => {
         if (!sensor._id) return;
 
         let url = `/events/`;
         let data = {
           sensorId: sensor._id,
-          mesure: sensor.value + 15,
-          time: payload.Time,
+          mesure: sensor.value,
+          time: payload.time,
         };
         const response = await fetchApi(url, "POST", data, 201, token);
 
